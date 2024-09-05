@@ -1,6 +1,9 @@
 ## Sicilian Search 
 Sicilian Search is a chess engine made in C language. It uses a variation of minimax algorithm called the negamax algorithm with alpha beta pruning along with other optimizations for quicker and more accurate searching. It uses an evalution function to evalute the score of any postion and does it for every root node of the game tree. It is compatible with UCI format.
 
+## How to get .exe file for chess engine
+Run the command `make CC=gcc` in the project directory
+
 ## How does the search work?
 The search algorithm starts with iterative deepening, which increases the search depth and uses alpha-beta pruning to explore moves. The algorithm adjusts the search window as depth increases to reduce the search space. It applies null move pruning to skip moves that don't improve the position and quiescence search to handle tactical situations by focusing on capture sequences. Transposition tables store previously evaluated positions, and negamax simplifies score calculations by flipping values during recursion. The search stops when it finds checkmate, exceeds the time limit, or encounters a beta cutoff.
 The working on the functions in the search.c file are explained below
