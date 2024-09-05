@@ -1,10 +1,5 @@
-
-
 #include <stdio.h>
 #include "defs.h"
-
-
-
 
 const int BitTable[64] = {
   63, 30, 3, 32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29, 2,
@@ -13,14 +8,12 @@ const int BitTable[64] = {
   58, 20, 37, 17, 36, 8
 };
 
-
 int PopBit(U64 *bb) {
     U64 b = *bb ^ (*bb - 1);
     unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
     *bb &= (*bb - 1);
     return BitTable[(fold * 0x783a9b23) >> 26];
 }
-
 
 int CountBits(U64 b) {
     return __builtin_popcountll(b);
@@ -47,7 +40,6 @@ void PrintBitBoard(U64 bb) {
     printf("\n\n");
 	
 }
-
 
 U64 flip_bitboard(U64 bb) {
 
