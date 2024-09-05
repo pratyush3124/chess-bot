@@ -569,19 +569,24 @@ int16_t castled_king(const S_BOARD *pos, int side) {
 }
 
 // Function to count open squares for a bishop
-int16_t bishop_mobility(const S_BOARD *pos, int sq) {
+int16_t bishop_mobility(const S_BOARD *pos, int sq, int side) {
     int count = 0;
     int directions[4] = {-9, -11, 11, 9};
+    int opponent_pawn = (side == WHITE) ? bP : wP;
     
     for (int i = 0; i < 4; ++i) {
         int t_sq = sq + directions[i];
-        while (SqOnBoard(t_sq) && pos->pieces[t_sq] == EMPTY) {
+        while (SqOnBoard(t_sq)) {
+            if (pos->pieces[t_sq] == opponent_pawn) {
+                break;
+            }
             count++;
             t_sq += directions[i];
         }
     }
     
-    return count * 5; // Adjust multiplier as needed
+    // Mobility bonus: 5 points per square of mobility
+    return count * 5;
 }
 
 // Function to check if a bishop is fianchettoed
@@ -898,12 +903,17 @@ inline int16_t EvalPosition(const S_BOARD *pos) {
     score += doubled_rooks(pos, WHITE) - doubled_rooks(pos, BLACK);
     score += castled_king(pos, WHITE) - castled_king(pos, BLACK);
     
-    // Bishop and Knight mobility
-    for (int pceNum = 0; pceNum < pos->pceNum[wB]; ++pceNum) {
-        score += bishop_mobility(pos, pos->pList[wB][pceNum]);
+    // For white bishops
+    pce = wB;
+    for(pceNum = 0; pceNum < pos->pceNum[pce]; ++pceNum) {
+        sq = pos->pList[pce][pceNum]
+        score += bishop_mobility(pos, sq, WHITE);
     }
-    for (int pceNum = 0; pceNum < pos->pceNum[bB]; ++pceNum) {
-        score -= bishop_mobility(pos, pos->pList[bB][pceNum]);
+    // For black bishops
+    pce = bB;
+    for(pceNum = 0; pceNum < pos->pceNum[pce]; ++pceNum) {
+        sq = pos->pList[pce][pceNum];
+        score -= bishop_mobility(pos, sq, BLACK);
     }
     for (int pceNum = 0; pceNum < pos->pceNum[wN]; ++pceNum) {
         score += knight_mobility(pos, pos->pList[wN][pceNum]);
