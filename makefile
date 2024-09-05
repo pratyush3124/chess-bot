@@ -5,7 +5,7 @@ CC ?= gcc
 SRCS = $(wildcard src/*.c)
 
 # Attaching "EXE=<name>" to the above command allows you to rename the executable to <name>. By default it is "Dragonrose.exe"
-EXE ?= Dragonrose
+EXE ?= MGBOT
 
 
 #
