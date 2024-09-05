@@ -522,15 +522,15 @@ static inline double CountMaterial(const S_BOARD *pos, double weight, double *wh
 
 
 // Function to check if a rook is on the 8th rank in the endgame
-int16_t rook_on_eighth_rank(const S_BOARD *pos, int side) {
+int16_t rook_on_seventh_rank(const S_BOARD *pos, int side) {
     int score = 0;
     int pce = (side == WHITE) ? wR : bR;
-    int eighth_rank = (side == WHITE) ? RANK_8 : RANK_1;
+    int eighth_rank = (side == WHITE) ? RANK_7 : RANK_2;
     
     for (int pceNum = 0; pceNum < pos->pceNum[pce]; ++pceNum) {
         int sq = pos->pList[pce][pceNum];
         if (RanksBrd[sq] == eighth_rank) {
-            score += (rand() % 4) + 8; // Random value between 8 and 11
+            score += 12; 
         }
     }
     
@@ -894,7 +894,7 @@ inline int16_t EvalPosition(const S_BOARD *pos) {
 	// No good way of calculating mobility
 
 	    // New evaluation components
-    score += rook_on_eighth_rank(pos, WHITE) - rook_on_eighth_rank(pos, BLACK);
+    score += rook_on_seventh_rank(pos, WHITE) - rook_on_seventh_rank(pos, BLACK);
     score += doubled_rooks(pos, WHITE) - doubled_rooks(pos, BLACK);
     score += castled_king(pos, WHITE) - castled_king(pos, BLACK);
     
