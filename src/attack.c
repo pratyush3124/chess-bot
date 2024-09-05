@@ -1,5 +1,3 @@
-// attack.c
-
 #include <stdio.h>
 #include "defs.h"
 #include "attack.h"
@@ -9,11 +7,7 @@ U64 rook_attacks[64][4096];
 U64 bishop_masks[64];
 U64 rook_masks[64];
 
-/*
-	Attack checkers
-*/
 
-// Determine if a move is check
 uint8_t IsCheck(const S_BOARD *pos, int move) {
 	uint8_t moving_pce = pos->pieces[FROMSQ(move)];
     uint8_t target_sq = TOSQ(move);
@@ -39,11 +33,11 @@ uint8_t IsCheck(const S_BOARD *pos, int move) {
 	}
 
 	return FALSE;
-	// TODO: Do the same for sliders and king
+	
 }
 
-// Used for check detection / determining castling privileges
-// Returns 1 if a given square is attacked
+
+
 uint8_t SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 
 	int pce,t_sq,dir;
@@ -52,7 +46,7 @@ uint8_t SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 	ASSERT(SideValid(side));
 	ASSERT(CheckBoard(pos));
 	
-	// pawns
+	
 	if(side == WHITE) {
 		if(pos->pieces[sq-11] == wP || pos->pieces[sq-9] == wP) {
 			return TRUE;
@@ -63,7 +57,7 @@ uint8_t SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 		}	
 	}
 	
-	// knights
+	
 	for(int index = 0; index < 8; ++index) {		
 		pce = pos->pieces[sq + KnDir[index]];
 		ASSERT(PceValidEmptyOffbrd(pce));
@@ -72,7 +66,7 @@ uint8_t SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// rooks, queens
+	
 	for(int index = 0; index < 4; ++index) {		
 		dir = RkDir[index];
 		t_sq = sq + dir;
@@ -92,7 +86,7 @@ uint8_t SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// bishops, queens
+	
 	for(int index = 0; index < 4; ++index) {		
 		dir = BiDir[index];
 		t_sq = sq + dir;
@@ -112,7 +106,7 @@ uint8_t SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// kings
+	
 	for(int index = 0; index < 8; ++index) {		
 		pce = pos->pieces[sq + KiDir[index]];
 		ASSERT(PceValidEmptyOffbrd(pce));
@@ -125,7 +119,7 @@ uint8_t SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 	
 }
 
-// Special version of SqAttacked() which excludes kings
+
 uint8_t SqAttackedS(const int sq, const int side, const S_BOARD *pos) {
 
 	int pce,t_sq,dir;
@@ -134,7 +128,7 @@ uint8_t SqAttackedS(const int sq, const int side, const S_BOARD *pos) {
 	ASSERT(SideValid(side));
 	ASSERT(CheckBoard(pos));
 	
-	// pawns
+	
 	if(side == WHITE) {
 		if(pos->pieces[sq-11] == wP || pos->pieces[sq-9] == wP) {
 			return TRUE;
@@ -145,7 +139,7 @@ uint8_t SqAttackedS(const int sq, const int side, const S_BOARD *pos) {
 		}	
 	}
 	
-	// knights
+	
 	for(int index = 0; index < 8; ++index) {		
 		pce = pos->pieces[sq + KnDir[index]];
 		ASSERT(PceValidEmptyOffbrd(pce));
@@ -154,7 +148,7 @@ uint8_t SqAttackedS(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// rooks, queens
+	
 	for(int index = 0; index < 4; ++index) {		
 		dir = RkDir[index];
 		t_sq = sq + dir;
@@ -174,7 +168,7 @@ uint8_t SqAttackedS(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// bishops, queens
+	
 	for(int index = 0; index < 4; ++index) {		
 		dir = BiDir[index];
 		t_sq = sq + dir;
@@ -199,19 +193,19 @@ uint8_t SqAttackedS(const int sq, const int side, const S_BOARD *pos) {
 }
 
 
-// Sort of inverse of SqAttacked(). Considering the perspective of the piece rather than the square
+
 uint8_t IsAttack(const int pce, const int sq, const S_BOARD *pos) {
-	// sq = Landing square of the move
+	
 
 	int attacked_sq, dir;
 	
 	ASSERT(SqOnBoard(sq));
 	ASSERT(CheckBoard(pos));
 
-	uint8_t side = PieceCol[pce]; // moving side
+	uint8_t side = PieceCol[pce]; 
 	#define get_piece_col(Sq) PieceCol[ pos->pieces[Sq] ]
 	
-	// pawns
+	
 	if (pce == wP) {
 		if((get_piece_col(sq-11) != side) || (get_piece_col(sq-9) != side)) {
 			return TRUE;
@@ -223,7 +217,7 @@ uint8_t IsAttack(const int pce, const int sq, const S_BOARD *pos) {
 		}	
 	}
 	
-	// knights
+	
 	if (PieceKnight[pce]) {
 		for(int index = 0; index < 8; ++index) {	
 			attacked_sq = sq + KnDir[index];
@@ -234,7 +228,7 @@ uint8_t IsAttack(const int pce, const int sq, const S_BOARD *pos) {
 	}
 	
 	
-	// rooks, queens
+	
 	if (PieceRookQueen[pce]) {
 		for(int index = 0; index < 4; ++index) {		
 			dir = RkDir[index];
@@ -250,7 +244,7 @@ uint8_t IsAttack(const int pce, const int sq, const S_BOARD *pos) {
 	}
 	
 	
-	// bishops, queens
+	
 	if (PieceBishopQueen[pce]) {
 		for(int index = 0; index < 4; ++index) {		
 			dir = BiDir[index];
@@ -266,13 +260,13 @@ uint8_t IsAttack(const int pce, const int sq, const S_BOARD *pos) {
 	}
 	
 	
-	// kings cannot attack
+	
 
 	return FALSE;
 	
 }
 
-// Outputs a weight of the attack based on what enemy pieces are attacking that square
+
 uint16_t SqAttackedByWho(const int sq, const int side, const S_BOARD *pos) {
 
 	int pce,t_sq,dir;
@@ -281,7 +275,7 @@ uint16_t SqAttackedByWho(const int sq, const int side, const S_BOARD *pos) {
 	ASSERT(SideValid(side));
 	ASSERT(CheckBoard(pos));
 	
-	// pawns
+	
 	if(side == WHITE) {
 		if(pos->pieces[sq-11] == wP || pos->pieces[sq-9] == wP) {
 			return 0;
@@ -292,7 +286,7 @@ uint16_t SqAttackedByWho(const int sq, const int side, const S_BOARD *pos) {
 		}	
 	}
 	
-	// knights
+	
 	for(int index = 0; index < 8; ++index) {		
 		pce = pos->pieces[sq + KnDir[index]];
 		ASSERT(PceValidEmptyOffbrd(pce));
@@ -301,7 +295,7 @@ uint16_t SqAttackedByWho(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// rooks, queens
+	
 	for(int index = 0; index < 4; ++index) {		
 		dir = RkDir[index];
 		t_sq = sq + dir;
@@ -325,7 +319,7 @@ uint16_t SqAttackedByWho(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// bishops, queens
+	
 	for(int index = 0; index < 4; ++index) {		
 		dir = BiDir[index];
 		t_sq = sq + dir;
@@ -349,7 +343,7 @@ uint16_t SqAttackedByWho(const int sq, const int side, const S_BOARD *pos) {
 		}
 	}
 	
-	// kings
+	
 	for(int index = 0; index < 8; ++index) {		
 		pce = pos->pieces[sq + KiDir[index]];
 		ASSERT(PceValidEmptyOffbrd(pce));
@@ -362,9 +356,7 @@ uint16_t SqAttackedByWho(const int sq, const int side, const S_BOARD *pos) {
 	
 }
 
-/*
-	Attack Table Generation
-*/
+
 
 U64 set_occupancy(int index, int bits_in_mask, uint64_t attack_mask) {
 
@@ -373,13 +365,13 @@ U64 set_occupancy(int index, int bits_in_mask, uint64_t attack_mask) {
 	for (int count = 0; count < bits_in_mask; count++) {
 		int sq = PopBit(&attack_mask);
 
-		// make sure occupancy is on board
+		
 		if (index & (1 << count)) {
 			occupancy |= (1ULL << sq);
 		}
 	}
 
-	// return occupancy map
+	
 	return occupancy;
 }
 
@@ -406,13 +398,13 @@ U64 mask_pawn_attacks(uint8_t sq, uint8_t col) {
 	return mask;
 }
 
-// Relevant occupancy squares for bishops
+
 U64 mask_bishop_attacks(uint8_t sq64) {
 
 	U64 attacks = 0ULL;
 	int r, f;
 
-	// Target ranks & files
+	
 	int tr = RanksBrd[SQ120(sq64)];
 	int tf = FilesBrd[SQ120(sq64)];
 
@@ -428,39 +420,39 @@ U64 mask_bishop_attacks(uint8_t sq64) {
 	return attacks;
 }
 
-// Relevant occupancy squares for rooks
+
 U64 mask_rook_attacks(uint8_t sq64) {
 
 	U64 attacks = 0ULL;
 	int r, f;
 
-	// Target rank & files
+	
 	int tr = RanksBrd[SQ120(sq64)];
 	int tf = FilesBrd[SQ120(sq64)];
 
 	for (r = tr + 1; r <= 6; r++)
-		// Up
+		
 		attacks |= (1ULL << (r * 8 + tf));
 	for (r = tr - 1; r >= 1; r--)
-		// Down
+		
 		attacks |= (1ULL << (r * 8 + tf));
 	for (f = tf + 1; f <= 6; f++)
-		// Right
+		
 		attacks |= (1ULL << (tr * 8 + f));
 	for (f = tf - 1; f >= 1; f--)
-		// Left
+		
 		attacks |= (1ULL << (tr * 8 + f));
 
 	return attacks;
 }
 
-// generate bishop attacks on the fly
+
 U64 bishop_attacks_on_the_fly(uint8_t sq, uint64_t block) {
 
 	U64 attacks = 0ULL;
 	int r, f;
 
-	// Target rank & files
+	
 	int tr = RanksBrd[sq];
 	int tf = FilesBrd[sq];
 
@@ -491,13 +483,13 @@ U64 bishop_attacks_on_the_fly(uint8_t sq, uint64_t block) {
 	return attacks;
 }
 
-// generate rook attacks on the fly
+
 U64 rook_attacks_on_the_fly(uint8_t sq, uint64_t block) {
 
 	U64 attacks = 0ULL;
 	int r, f;
 
-	// Target rank & files
+	
 	int tr = RanksBrd[sq];
 	int tf = FilesBrd[sq];
 
@@ -550,7 +542,7 @@ U64 get_rook_attacks(uint8_t sq, U64 occupancy) {
 	return rook_attacks[sq64][occupancy];
 }
 
-// get queen attacks
+
 U64 get_queen_attacks(uint8_t sq, U64 occupancy) {
 
 	U64 queen_attacks = 0ULL;
@@ -588,7 +580,7 @@ void init_slider_attacks() {
 			int bishop_occupancy_indicies = (1 << bishop_relevant_bits_count);
 			int rook_occupancy_indicies = (1 << rook_relevant_bits_count);
 
-			// Initialise bishop attacks
+			
 			for (int index = 0; index < bishop_occupancy_indicies; index++) {
 
 				U64 occupancy = set_occupancy(index, bishop_relevant_bits_count, bishop_masks[sq]);
@@ -599,7 +591,7 @@ void init_slider_attacks() {
 				bishop_attacks[sq][magic_index] = bishop_attacks_on_the_fly(sq, occupancy);
 			}
 
-			// Initialise rook attacks
+			
 			for (int index = 0; index < rook_occupancy_indicies; index++) {
 
 				U64 occupancy = set_occupancy(index, rook_relevant_bits_count, rook_masks[sq]);
