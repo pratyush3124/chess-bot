@@ -1,11 +1,11 @@
-// board.c
+
 
 #include <stdio.h>
 #include "defs.h"
 
-// Initialises the board
+
 void ResetBoard(S_BOARD *pos) {
-	// Sets board to empty, and borders to offboard
+	
   	for(int index = 0; index < BRD_SQ_NUM; ++index) {
 		pos->pieces[index] = OFFBOARD;
 	}
@@ -13,7 +13,7 @@ void ResetBoard(S_BOARD *pos) {
 		pos->pieces[SQ120(index)] = EMPTY;
 	}
 
-	// Aggregate piece counts
+	
 	for(int index = 0; index < 2; ++index) {
 		pos->bigPce[index] = 0;
 		pos->majPce[index] = 0;
@@ -24,15 +24,15 @@ void ResetBoard(S_BOARD *pos) {
 	pos->pawns[2] = 0ULL;
 	pos->occupancy[2] = 0ULL;
 
-	// Piece counts
+	
 	for(int index = 0; index < 13; ++index) {
 		pos->pceNum[index] = 0;
 	}
 
-	// King squares
+	
 	pos->KingSq[WHITE] = pos->KingSq[BLACK] = NO_SQ;
 
-	// Misc data
+	
 	pos->side = BOTH;
 	pos->enPas = NO_SQ;
 	pos->fiftyMove = 0;
@@ -64,10 +64,10 @@ int PceListOk(const S_BOARD *pos) {
     return TRUE;
 }
 
-// Checks if the board struct is aligned with the position
-// Returns 1 if success. 0 if ASSERT fails.
+
+
 int CheckBoard(const S_BOARD *pos) {
-	// Temp board
+	
 	int t_pceNum[13] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	int t_bigPce[2] = { 0, 0};
 	int t_majPce[2] = { 0, 0};
@@ -85,7 +85,7 @@ int CheckBoard(const S_BOARD *pos) {
 	t_occupancy[BLACK] = pos->occupancy[BLACK];
 	t_occupancy[BOTH] = pos->occupancy[BOTH];
 
-	// check piece lists
+	
 	for(t_piece = wP; t_piece <= bK; ++t_piece) {
 		for(t_pce_num = 0; t_pce_num < pos->pceNum[t_piece]; ++t_pce_num) {
 			sq120 = pos->pList[t_piece][t_pce_num];
@@ -93,7 +93,7 @@ int CheckBoard(const S_BOARD *pos) {
 		}
 	}
 
-	// check piece count and other counters
+	
 	for(sq64 = 0; sq64 < 64; ++sq64) {
 		sq120 = SQ120(sq64);
 		t_piece = pos->pieces[sq120];
@@ -108,7 +108,7 @@ int CheckBoard(const S_BOARD *pos) {
 		ASSERT(t_pceNum[t_piece]==pos->pceNum[t_piece]);
 	}
 
-	// Check bitboards count
+	
 	pcount = CNT(t_pawns[WHITE]);
 	ASSERT(pcount == pos->pceNum[wP]);
 	pcount = CNT(t_pawns[BLACK]);
@@ -116,7 +116,7 @@ int CheckBoard(const S_BOARD *pos) {
 	pcount = CNT(t_pawns[BOTH]);
 	ASSERT(pcount == (pos->pceNum[bP] + pos->pceNum[wP]));
 
-	// Check pawns and occupancy bitboards
+	
 	while(t_pawns[WHITE]) {
 		sq64 = POP(&t_pawns[WHITE]);
 		ASSERT(pos->pieces[SQ120(sq64)] == wP);
@@ -149,16 +149,16 @@ int CheckBoard(const S_BOARD *pos) {
 		ASSERT(pos->pieces[SQ120(sq64)] != EMPTY);
 	}
 
-	// Check material
+	
 	ASSERT(t_minPce[WHITE]==pos->minPce[WHITE] && t_minPce[BLACK]==pos->minPce[BLACK]);
 	ASSERT(t_majPce[WHITE]==pos->majPce[WHITE] && t_majPce[BLACK]==pos->majPce[BLACK]);
 	ASSERT(t_bigPce[WHITE]==pos->bigPce[WHITE] && t_bigPce[BLACK]==pos->bigPce[BLACK]);
 
-	// Check sides, en passant, king square and castlePerms
+	
 	ASSERT(pos->side==WHITE || pos->side==BLACK);
 	ASSERT(GeneratePosKey(pos)==pos->posKey);
 
-	// En passant sq must either not exist, or 6th/3rd rank
+	
 	ASSERT(pos->enPas==NO_SQ || ( RanksBrd[pos->enPas]==RANK_6 && pos->side == WHITE)
 		 || ( RanksBrd[pos->enPas]==RANK_3 && pos->side == BLACK));
 
@@ -172,7 +172,7 @@ int CheckBoard(const S_BOARD *pos) {
 	return TRUE;
 }
 
-// Updates board struct as per position
+
 void UpdateListsMaterial(S_BOARD *pos) {
 
 	int piece, sq, colour;
@@ -190,15 +190,15 @@ void UpdateListsMaterial(S_BOARD *pos) {
 
 			ASSERT(pos->pceNum[piece] < 10 && pos->pceNum[piece] >= 0);
 			
-			// Positions of the piece [pieceType] [no. of the piece] = the square
+			
 			pos->pList[piece][pos->pceNum[piece]] = sq;
-			pos->pceNum[piece]++; // tracks no of piece / pointer of pList
+			pos->pceNum[piece]++; 
 
-			// Setting king square
+			
 			if(piece == wK) pos->KingSq[WHITE] = sq;
 			if(piece == bK) pos->KingSq[BLACK] = sq;
 
-			// Setting pawn bitboards
+			
 			if(piece == wP) {
 				SETBIT(pos->pawns[WHITE], SQ64(sq));
 				SETBIT(pos->pawns[BOTH], SQ64(sq));
@@ -207,7 +207,7 @@ void UpdateListsMaterial(S_BOARD *pos) {
 				SETBIT(pos->pawns[BOTH], SQ64(sq));
 			}
 
-			// Setting occupancy bitboards
+			
 			pos->occupancy[BOTH] |= (1ULL << SQ64(sq));
 			if (PieceCol[piece] == WHITE) {
 				pos->occupancy[WHITE] |= (1ULL << SQ64(sq));
@@ -219,10 +219,10 @@ void UpdateListsMaterial(S_BOARD *pos) {
 	}
 }
 
-// Returns -1 if error, 0 otherwise.
+
 int ParseFen(char *fen, S_BOARD *pos) {
 	
-	// To prevent crashes
+	
 	ASSERT(fen!=NULL);
 	ASSERT(pos!=NULL);
 
@@ -233,7 +233,7 @@ int ParseFen(char *fen, S_BOARD *pos) {
 	int  rank = RANK_8;
     int  file = FILE_A;
     int  piece = 0;
-    int  count = 0; // no. of consecutive empty squares / placeholder
+    int  count = 0; 
 	int  sq64 = 0;
 	int  sq120 = 0;
 
@@ -264,7 +264,7 @@ int ParseFen(char *fen, S_BOARD *pos) {
             case '7':
             case '8':
                 piece = EMPTY;
-                count = *fen - '0'; // number of consecutive empty squares
+                count = *fen - '0'; 
                 break;
 
             case '/':
@@ -279,11 +279,11 @@ int ParseFen(char *fen, S_BOARD *pos) {
                 return -1;
         }
 
-		// PUtting pieces on the board
+		
 		for (int i = 0; i < count; i++) {
             sq64 = rank * 8 + file;
 			sq120 = SQ120(sq64);
-            if (piece != EMPTY) { // Skips a file if empty square
+            if (piece != EMPTY) { 
                 pos->pieces[sq120] = piece;
             }
 			file++;
@@ -295,12 +295,12 @@ int ParseFen(char *fen, S_BOARD *pos) {
   	* Parsing Misc Data *
 	****************** */
 
-	// Side-to-move parsing
+	
 	ASSERT(*fen == 'w' || *fen == 'b');
 	pos->side = (*fen == 'w') ? WHITE : BLACK;
 	fen += 2;
 
-	// Castling perm parsing
+	
 	for (int i = 0; i < 4; i++) {
         if (*fen == ' ') {
             break;
@@ -317,7 +317,7 @@ int ParseFen(char *fen, S_BOARD *pos) {
 	fen++;
 	ASSERT(pos->castlePerm >= 0 && pos->castlePerm <= 15);
 
-	// En passant parsing
+	
 	if (*fen != '-') {
 		file = fen[0] - 'a';
 		rank = fen[1] - '1';
@@ -328,7 +328,7 @@ int ParseFen(char *fen, S_BOARD *pos) {
 		pos->enPas = FR2SQ(file,rank);
     }
 
-	// Zobrist key
+	
 	pos->posKey = GeneratePosKey(pos);
 
 	UpdateListsMaterial(pos);
@@ -336,7 +336,7 @@ int ParseFen(char *fen, S_BOARD *pos) {
 	return 0;
 }
 
-// Prints the board out
+
 void PrintBoard(const S_BOARD *pos) {
 	printf("\nGame Board:\n\n");
 
@@ -366,7 +366,7 @@ void PrintBoard(const S_BOARD *pos) {
 	printf("PosKey:%llX\n",pos->posKey);
 }
 
-// Mirrors the board
+
 void MirrorBoard(S_BOARD *pos) {
 
     int tempPiecesArray[64];

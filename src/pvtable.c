@@ -1,4 +1,4 @@
-// pvtable.c
+
 
 #include "stdio.h"
 #include "defs.h"
@@ -62,11 +62,11 @@ void InitHashTable(S_HASHTABLE *table, const int MB) {
 		
     table->pTable = (S_HASHENTRY *) malloc(table->maxEntries * sizeof(S_HASHENTRY));
 	if(table->pTable == NULL) {
-		// printf("Hash Allocation Failed, trying %dMB...\n",MB/2);
+		
 		InitHashTable(table, MB/2);
 	} else {
 		ClearHashTable(table);
-		// printf("HashTable init complete with %d entries\n",table->maxEntries);
+		
 	}
 	
 }
@@ -128,26 +128,26 @@ void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score,
 	
 	uint8_t replace = FALSE;
 
-	// Check if there is an existing entry at a certain index
+	
 	if( table->pTable[index].posKey == 0) {
 		table->newWrite++;
 		table->numEntries++;
 		replace = TRUE;
 	} else {
 		int entryAge = table->pTable[index].age; 
-		// Existing entry is old, or equal age but shallower depth
+		
 		if (entryAge < table->currentAge) {
-			// Existing entry is old, so we replace it
+			
 			replace = TRUE;
 			table->overWrite++;
 		} else if (entryAge == table->currentAge && table->pTable[index].depth < depth) {
-			// Existing entry is equal age, but at a shallower depth, we still replace it
+			
 			replace = TRUE;
 			table->overWrite++;
 		}
 	}
 
-	if (!replace) return; // No need to overwrite the entry
+	if (!replace) return; 
 	
 	int written_score = score;
 	if (score > ISMATE) {

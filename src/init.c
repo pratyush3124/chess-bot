@@ -1,10 +1,10 @@
-// init.c
+
 
 #include "defs.h"
 #include "stdio.h"
 #include "stdlib.h"
 
-// Randomisation is separated as rand() is only 4 bytes
+
 #define RAND_64 	((U64)rand() | \
 					(U64)rand() << 15 | \
 					(U64)rand() << 30 | \
@@ -70,10 +70,10 @@ void InitEvalMasks() {
             tsq -= 8;
         }
 		
-		// Pawn is on B-H files
+		
         if(FilesBrd[SQ120(sq)] > FILE_A) {
 			
-			// Mask the file to the left of a potential pawn
+			
             IsolatedMask[sq] |= FileBBMask[FilesBrd[SQ120(sq)] - 1];
 
             tsq = sq + 7;
@@ -89,10 +89,10 @@ void InitEvalMasks() {
             }
         }
 
-		// Pawn is on A-G files
+		
         if(FilesBrd[SQ120(sq)] < FILE_H) {
 
-			// Mask the file to the right of a potential pawn
+			
             IsolatedMask[sq] |= FileBBMask[FilesBrd[SQ120(sq)] + 1];
 
             tsq = sq + 9;
@@ -158,11 +158,11 @@ void InitBitMasks() {
 void InitSq120To64() {
 
 	for(int index = 0; index < BRD_SQ_NUM; ++index) {
-		Sq120ToSq64[index] = 65; // default value if off board
+		Sq120ToSq64[index] = 65; 
 	}
 
 	for(int index = 0; index < 64; ++index) {
-		Sq64ToSq120[index] = 120; // default value if off board
+		Sq64ToSq120[index] = 120; 
 	}
 	
 	int sq64 = 0;
@@ -179,23 +179,23 @@ void InitSq120To64() {
 
 void AllInit() {
 	
-	// init.c
+	
 	InitSq120To64();
 	InitFilesRanksBrd();
 
-	// attack.c (High priority)
+	
 	init_attack_tables();
 
-	// init.c (cont.)
+	
 	InitBitMasks();
 	InitEvalMasks();
 	InitHashKeys();
 	
 
-	// polybook.c
+	
 	InitPolyBook();
 
-	// movegen.c
+	
 	InitMvvLva();
 
 }

@@ -1,4 +1,4 @@
-// makemove.c
+
 
 #include "defs.h"
 #include "stdio.h"
@@ -41,7 +41,7 @@ static void ClearPiece(const int sq, S_BOARD *pos) {
     HASH_PCE(pce,sq);
 	
 	pos->pieces[sq] = EMPTY;
-    // pos->material[col] -= PieceValMg[pce] * evalWeight(pos) + PieceValEg[pce] * ( 1 - evalWeight(pos) );;
+    
 	
 	if(PieceBig[pce]) {
 			pos->bigPce[col]--;
@@ -96,7 +96,7 @@ static void AddPiece(const int sq, S_BOARD *pos, const int pce) {
 		SETBIT(pos->pawns[BOTH],SQ64(sq));
 	}
 	
-	// pos->material[col] += PieceValMg[pce] * evalWeight(pos) + PieceValEg[pce] * ( 1 - evalWeight(pos) );
+	
 	pos->pList[pce][pos->pceNum[pce]++] = sq;
 	
 }
@@ -243,7 +243,7 @@ int MakeMove(S_BOARD *pos, int move) {
 
     ASSERT(CheckBoard(pos));
 	
-	// It is an illegal move to move while in check (if it doesn't stop it)
+	
 	if(SqAttacked(pos->KingSq[side],pos->side,pos))  {
         TakeMove(pos);
         return FALSE;
@@ -347,7 +347,7 @@ void MakeNullMove(S_BOARD *pos) {
 	ASSERT(pos->ply >= 0 && pos->ply < MAX_DEPTH);
 
     return;
-} // MakeNullMove
+} 
 
 void TakeNullMove(S_BOARD *pos) {
     ASSERT(CheckBoard(pos));

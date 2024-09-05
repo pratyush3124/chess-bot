@@ -1,4 +1,4 @@
-// movegen.c
+
 
 #include "stdio.h"
 #include "defs.h"
@@ -283,7 +283,7 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
 			}
 		}
 
-		// castling
+		
 		if(pos->castlePerm &  BKCA) {
 			if(pos->pieces[F8] == EMPTY && pos->pieces[G8] == EMPTY) {
 				if(!SqAttacked(E8,WHITE,pos) && !SqAttacked(F8,WHITE,pos) ) {
@@ -308,27 +308,27 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
 		ASSERT(PieceValid(pce));
 
 		for(pceNum = 0; pceNum < pos->pceNum[pce]; ++pceNum) {
-			// Get the square of the piece
+			
 			sq = pos->pList[pce][pceNum];
 			ASSERT(SqOnBoard(sq));
 
-			// Loop through NumDir iteratively to generate moves
+			
 			for(index = 0; index < NumDir[pce]; ++index) {
 				dir = PceDir[pce][index];
 				t_sq = sq + dir;
 
 				while(!SQOFFBOARD(t_sq)) {
-					// BLACK ^ 1 == WHITE       WHITE ^ 1 == BLACK
+					
 					if(pos->pieces[t_sq] != EMPTY) {
 						if( PieceCol[pos->pieces[t_sq]] == (side ^ 1)) {
-							// The square is not empty and the piece belongs to the opponent 
-							// Generate capture move
+							
+							
 							AddCaptureMove(pos, MOVE(sq, t_sq, pos->pieces[t_sq], EMPTY, 0), list);
 						}
 						break;
 					}
-					// The square is empty
-					// Generate quiet move
+					
+					
 					AddQuietMove(pos, MOVE(sq, t_sq, EMPTY, EMPTY, 0), list, FALSE);
 					t_sq += dir;
 				}
@@ -357,17 +357,17 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
 					continue;
 				}
 
-				// BLACK ^ 1 == WHITE       WHITE ^ 1 == BLACK
+				
 				if(pos->pieces[t_sq] != EMPTY) {
 					if( PieceCol[pos->pieces[t_sq]] == (side ^ 1)) {
-						// The square is not empty and the piece belongs to the opponent 
-						// Generate capture move
+						
+						
 						AddCaptureMove(pos, MOVE(sq, t_sq, pos->pieces[t_sq], EMPTY, 0), list);
 					}
 					continue;
 				}
-				// The square is empty
-				// Generate quiet move
+				
+				
 				AddQuietMove(pos, MOVE(sq, t_sq, EMPTY, EMPTY, 0), list, FALSE);
 			}
 		}
@@ -447,17 +447,17 @@ void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list) {
 		ASSERT(PieceValid(pce));
 
 		for(pceNum = 0; pceNum < pos->pceNum[pce]; ++pceNum) {
-			// Get the square of the piece
+			
 			sq = pos->pList[pce][pceNum];
 			ASSERT(SqOnBoard(sq));
 
-			// Loop through NumDir iteratively to generate moves
+			
 			for(index = 0; index < NumDir[pce]; ++index) {
 				dir = PceDir[pce][index];
 				t_sq = sq + dir;
 
 				while(!SQOFFBOARD(t_sq)) {
-					// BLACK ^ 1 == WHITE       WHITE ^ 1 == BLACK
+					
 					if(pos->pieces[t_sq] != EMPTY) {
 						if( PieceCol[pos->pieces[t_sq]] == (side ^ 1)) {
 							AddCaptureMove(pos, MOVE(sq, t_sq, pos->pieces[t_sq], EMPTY, 0), list);
@@ -491,7 +491,7 @@ void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list) {
 					continue;
 				}
 
-				// BLACK ^ 1 == WHITE       WHITE ^ 1 == BLACK
+				
 				if(pos->pieces[t_sq] != EMPTY) {
 					if( PieceCol[pos->pieces[t_sq]] == (side ^ 1)) {
 						AddCaptureMove(pos, MOVE(sq, t_sq, pos->pieces[t_sq], EMPTY, 0), list);

@@ -1,4 +1,4 @@
-// misc.c
+
 
 #include "defs.h"
 #include <stdio.h>
@@ -7,8 +7,8 @@
 
 #ifdef WIN32
 #include "windows.h"
-// #else
-// #include "sys/time.h"
+
+
 #endif
 
 /*
@@ -23,7 +23,7 @@ uint64_t GetTimeMs() {
 }
 */
 
-// Less accurate due to not having microseconds but should work?
+
 uint64_t GetTimeMs() {
 #ifdef WIN32
     return GetTickCount();
@@ -43,10 +43,10 @@ inline uint8_t on_same_diagonal(uint8_t sq_1, uint8_t sq_2) {
     return abs(sq_1 - sq_2) % 9;
 }
 
-// Determines if the endgame involves opposite-coloured bishops
+
 inline uint8_t isOppColBishops(const S_BOARD *pos) {
 
-    // Board has no bishops for either side
+    
     if ( (pos->pceNum[wB] != 1) || (pos->pceNum[bB] != 1) ) {
         return FALSE;
     }
@@ -62,7 +62,7 @@ inline uint8_t isOppColBishops(const S_BOARD *pos) {
 
 }
 
-// Manhattan distance
+
 inline uint8_t dist_between_squares(uint8_t sq_1, uint8_t sq_2) {
     uint8_t file_1 = FilesBrd[sq_1];
     uint8_t rank_1 = RanksBrd[sq_1];
@@ -73,7 +73,7 @@ inline uint8_t dist_between_squares(uint8_t sq_1, uint8_t sq_2) {
 }
 
 /*
-// Manhattan distance alt defintiion
+
 inline int8_t max_between_squares(uint8_t sq_1, uint8_t sq_2) {
     uint8_t file_1 = FilesBrd[sq_1];
     uint8_t rank_1 = RanksBrd[sq_1];

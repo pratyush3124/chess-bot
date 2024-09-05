@@ -1,4 +1,4 @@
-// uci.c
+
 
 #include <stdio.h>
 #include "defs.h"
@@ -7,11 +7,11 @@
 
 #define INPUTBUFFER 400 * 6
 
-// go depth 6 wtime 180000 btime 100000 binc 1000 winc 1000 movetime 1000 movestogo 40
+
 void ParseGo(char* line, S_SEARCHINFO *info, S_BOARD *pos, S_HASHTABLE *table) {
 
 	int depth = -1, movestogo = 30, movetime = -1;
-	int time = -1, inc = 0; // Supports up to ~24 days base time + ~24 days increment. In practice 300+60 should be upper limit.
+	int time = -1, inc = 0; 
     char *ptr = NULL;
 	info->timeset = FALSE;
 
@@ -65,37 +65,37 @@ void ParseGo(char* line, S_SEARCHINFO *info, S_BOARD *pos, S_HASHTABLE *table) {
 		double time_allocated = time;
 		uint8_t phase_moves = 0;
 
-		// Rose was having issues managing time when there was >=5s increment
-		// time += inc / 2; // include increment in the allocation
+		
+		
 
-		// Time trouble check
+		
 		if (time < 30000 /* 30s */) {
 			time_allocated /= 80;
 		} else {
-			// Opening phase
+			
 			if (pos->hisPly <= 30) {
-				// Allocate 10% of total time
+				
 				time_allocated *= 0.1;
-				phase_moves = round((30 - pos->hisPly + (pos->side ? 0 : 1)) / 2.0); // perspective adjustment to prevent crash
+				phase_moves = round((30 - pos->hisPly + (pos->side ? 0 : 1)) / 2.0); 
 				time_allocated /= phase_moves;
 			} else {
-				// Early-middlegame phase
+				
 				if (pos->hisPly <= 70) {
-					// Allocate 55% of total time
+					
 					time_allocated *= 0.45;
 					phase_moves = round( (70 - pos->hisPly + (pos->side ? 0 : 1)) / 2.0 );
 					time_allocated /= phase_moves;
 				} else {
-					// Late-middlegame - endgame phase
-					// Allocate remaining time evenly
+					
+					
 					time_allocated /= 35;
 				}
 			}
 		}
 		
 
-		// time_allocated /= movestogo;
-		time_allocated -= 50; // overhead
+		
+		time_allocated -= 50; 
 		info->stoptime = (int)(info->starttime + time_allocated + inc/2);
 	}
 
@@ -103,13 +103,13 @@ void ParseGo(char* line, S_SEARCHINFO *info, S_BOARD *pos, S_HASHTABLE *table) {
 		info->depth = MAX_DEPTH;
 	}
 
-	// printf("time:%d start:%llu stop:%llu depth:%d timeset:%d\n", time, info->starttime, info->stoptime, info->depth, info->timeset);
+	
 	SearchPosition(pos, table, info);
 }
 
-// position fen fenstr
-// position startpos
-// ... moves e2e4 e7e5 b7b8q
+
+
+
 void ParsePosition(char* lineIn, S_BOARD *pos) {
 
 	lineIn += 9;
@@ -142,7 +142,7 @@ void ParsePosition(char* lineIn, S_BOARD *pos) {
         }
     }
 
-	// PrintBoard(pos);
+	
 }
 
 void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
@@ -156,14 +156,14 @@ void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 	printf("option name Hash type spin default 64 min 4 max %d\n", MAX_HASH);
 	int MB = 64;
 	if (OPENBENCH_MODE) {
-		printf("option name Threads type spin default 1 min 1 max 1\n"); // No multithreading at the moment
-		printf("option name Book type check default false\n"); // The book will be provided by the test environment
+		printf("option name Threads type spin default 1 min 1 max 1\n"); 
+		printf("option name Book type check default false\n"); 
 		EngineOptions->UseBook = FALSE;
 	} else {
 		printf("option name Book type check default true\n");
 		EngineOptions->UseBook = TRUE;
 	}
-	ParseFen(START_FEN, pos); // Default to startpos on start-up
+	ParseFen(START_FEN, pos); 
     printf("uciok\n");
 
 	while (TRUE) {

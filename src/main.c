@@ -1,4 +1,4 @@
-// main.c
+
 
 #include <stdio.h>
 #include "defs.h"
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 	setbuf(stdin, NULL);
     setbuf(stdout, NULL);
     
-	// CLI Arguments
+	
     for(int ArgNum = 0; ArgNum < argc; ++ArgNum) {
     	if (strncmp(argv[ArgNum], "bench", 5) == 0) {
 			clock_t start, end;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 			printf("\n-#-#- Benchmark results -#-#-\n");
 			printf("%lu nodes %d nps\n", total_nodes, (int)( total_nodes / time ));
 
-			// Quit after benching has finished
+			
 			info->quit = TRUE; 
             return 0;
 		}
@@ -74,13 +74,13 @@ int main(int argc, char *argv[]) {
 			ParseFen(test_fen, pos);
 			U64 attacks = get_bishop_attacks(C4, pos->occupancy[BOTH]);
 			PrintBitBoard(attacks);
-			// attacks = get_rook_attacks(H6, pos->occupancy[BOTH]);
-			// PrintBitBoard(attacks);
+			
+			
 		}
 	}
 
 	free(HashTable->pTable);
-	CleanPolyBook(); // Free book entries
+	CleanPolyBook(); 
 	return 0;
 }
 

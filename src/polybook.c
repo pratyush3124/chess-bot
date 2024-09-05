@@ -10,7 +10,7 @@ typedef struct {
 } S_POLY_BOOK_ENTRY;
 
 long maxEntries = 0;
-S_POLY_BOOK_ENTRY *entries; // Allocated in InitPolyBook(), freed in ClearPolyBook()
+S_POLY_BOOK_ENTRY *entries; 
 
 const int PolyKindOfPiece[13] = {
 	-1, 1, 3, 5, 7, 9, 11, 0, 2, 4, 6, 8, 10
@@ -23,25 +23,25 @@ void InitPolyBook() {
 	FILE *pFile = fopen("VICEbook.bin","rb");
 	
 	if (pFile == NULL) {
-		// printf("Book File Not Read\n");
+		
 	} else {
 		fseek(pFile,0,SEEK_END);
 		long position = ftell(pFile);
 		
 		if(position < (long)sizeof(S_POLY_BOOK_ENTRY)) {
-			// printf("No Entries Found\n");
+			
 			return;
 		}
 		
 		maxEntries = position / sizeof(S_POLY_BOOK_ENTRY);
-		// printf("%ld Entries Found In File\n", maxEntries);
+		
 		
 		entries = (S_POLY_BOOK_ENTRY*)malloc(maxEntries * sizeof(S_POLY_BOOK_ENTRY));
 		rewind(pFile);
 		
 		size_t returnValue;
 		returnValue = fread(entries, sizeof(S_POLY_BOOK_ENTRY), maxEntries, pFile);
-		// printf("fread() %lu Entries Read in from file\n", returnValue);
+		
 		
 		if(maxEntries > 0) {
 			EngineOptions->UseBook = TRUE;
@@ -95,7 +95,7 @@ U64 PolyKeyFromBoard(const S_BOARD *board) {
 		}
 	}
 	
-	// castling
+	
 	offset = 768;
 	
 	if(board->castlePerm & WKCA) finalKey ^= Random64Poly[offset + 0];
@@ -103,7 +103,7 @@ U64 PolyKeyFromBoard(const S_BOARD *board) {
 	if(board->castlePerm & BKCA) finalKey ^= Random64Poly[offset + 2];
 	if(board->castlePerm & BQCA) finalKey ^= Random64Poly[offset + 3];
 	
-	// enpassant
+	
 	offset = 772;
 	if(HasPawnForCapture(board) == TRUE) {
 		file = FilesBrd[board->enPas];
@@ -178,7 +178,7 @@ int ConvertPolyMoveToInternalMove(unsigned short polyMove, S_BOARD *board) {
 	return ParseMove(moveString, board);
 }
 
-// Return NOMOVE if book move isn't found
+
 int GetBookMove(S_BOARD *board) {
 	S_POLY_BOOK_ENTRY *entry;
 	unsigned short move;
